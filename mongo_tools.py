@@ -9,11 +9,11 @@ db = client.FinalProject
 collection = db.Files
 
 """ GLOBAL FUNCTIONS """
-def insert_mongo_file(db_file):
+def insert_file(db_file):
     """ Add a DBFile object to the Mongo DB."""
     collection.insert_one(db_file.dict_all())
 
-def update_mongo_file(db_file):
+def update_file(db_file):
     """ Update the contents of a MongoDB file."""
     collection.update_one({"name": db_file.name},
                           {"$set": {"sha1": db_file.sha1,
@@ -23,7 +23,7 @@ def update_mongo_file(db_file):
                            }
                           )
 
-def get_mongo_file(name):
+def get_file(name):
     """ Get a single file (name) from MongoDB as a DBFile object."""
     results = collection.find_one({"name": name})
     return DBFile(name=results['name'],
@@ -32,7 +32,7 @@ def get_mongo_file(name):
                   data=results['bin']
                   )
 
-def get_mongo_files():
+def get_files():
     """ Return list of all DBFiles from Mongo."""
     files = []
     for result in collection.find():
