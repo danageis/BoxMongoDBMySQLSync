@@ -4,10 +4,17 @@ from mysql_auth import connect_db
 from objects import DBFile
 
 """ GLOBAL VARIABLES """
-connection = connect_db()
-c = connection.cursor()
+connection = None
+c = None
 
-def insert_mysql_file(db_file):
+""" GLOBAL FUNCTIONS """
+def connect():
+    """ Connect to MySQL instance and get a connection cursor. """
+    global connection, c
+    connection = connect_db()
+    c = connection.cursor()
+
+def insert_file(db_file):
     """ Insert a DBFile object into the Files table."""
     # Assign ID to 1 greater than the current number of rows
     c.execute('select count(*) from files')
@@ -19,13 +26,13 @@ def insert_mysql_file(db_file):
               )
     connection.commit()
 
-def update_mysql_file(db_file):
+def update_file(db_file):
     """ Updates the file in-place for an existing file in the table."""
     c.execute('update files set sha1=%s, modified=%s, bin=%s where filename=%s',
               (db_file.sha1, db_file.modified, db_file.bin, db_file.name)
               )
 
-def get_mysql_file(name):
+def get_file(name):
     """ Get a single file from MySQL DB as a DBFile object.
 
     name (str): name of file to return
@@ -38,7 +45,7 @@ def get_mysql_file(name):
                   data=results[4]
                   )
 
-def get_mysql_files():
+def get_files():
     """ Return list of all DBFiles from MySQL DB."""
     c.execute('select * from files')
     files = []

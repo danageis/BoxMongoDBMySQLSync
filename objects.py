@@ -14,11 +14,3 @@ class File():
     def all(self):
         """ Returns tuple of all attributes in above order."""
         return (self.name, self.sha1, self.modified, self.bin)
-
-    def dict_all(self):
-        """ Returns a dictionary representation of all attributes."""
-        return {"name": self.name,
-                "sha1": self.sha1,
-                "modified": self.modified,
-                "bin": self.bin
-                }
