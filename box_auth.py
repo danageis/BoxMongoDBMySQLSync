@@ -72,7 +72,7 @@ def store_tokens(access_token, refresh_token):
 def run_server():
     """Run HTTP server to retrieve auth_code for Box SDK."""
     global httpd
-    server_addr = ('127.0.0.1', 8081)
+    server_addr = ('127.0.0.1', 7777)
     httpd = HTTPServer(server_addr, BoxRedirectHandler)
     httpd.serve_forever()
 
@@ -102,7 +102,7 @@ def start_session():
         # Start HTTP server to get auth token from Box.com redirect
         server_thread = threading.Thread(target=run_server)
         server_thread.start()
-        auth_url, csrf = oauth.get_authorization_url('http://127.0.0.1:8081')
+        auth_url, csrf = oauth.get_authorization_url('http://127.0.0.1:7777')
     
         # Open browser and wait for user authentification
         webbrowser.open(auth_url)
@@ -117,3 +117,8 @@ def start_session():
 
     # Return authenticated client
     return boxsdk.Client(oauth)
+
+if __name__ == "__main__":
+    start_session()
+    print("Box.com authentication successfull!")
+    input("Press Enter to exit...")

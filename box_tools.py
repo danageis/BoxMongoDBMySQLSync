@@ -1,8 +1,9 @@
 #!/usr/bin/env python
 
+from io import BytesIO
 from boxsdk.object.file import File as BoxFile
 from objects import File
-from box_auth import start_session
+import box_auth
 
 """ GLOBAL VARIABLES """
 # Box folder ID for the directory in which files are stored
@@ -18,14 +19,16 @@ box_files = None
 def connect():
     """ Connect to Box.com and get a list of all files available. """
     global client, box_files
-    client = start_session()
+    client = box_auth.start_session()
     box_files = [f for f in client.folder(folder_id).get_items(limit=None)
                  if type(f) == BoxFile
                  ]
 
 def insert_file(db_file):
     """ Upload a File object to Box.com."""
-    client.folder(folder_id).upload_stream(db_file.bin, db_file.name)
+    # Convert raw bytes to bytes-stream object (Box SDK expects this obj type)
+    bin_obj = BytesIO(db_file.bin)
+    client.folder(folder_id).upload_stream(bin_obj, db_file.name)
 
 def update_file(db_file):
     """ Update a file on Box.com with a File object."""
