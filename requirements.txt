@@ -1,2 +1,5 @@
 boxsdk
 mysql-connector
+pymongo
+flask
+requests
