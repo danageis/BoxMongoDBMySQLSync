@@ -3,7 +3,7 @@
 from requests import post
 
 # Enter the path to the file to upload
-file_path = None
+file_path = 'requirements.txt'
 
 # URL to REST upload file service
 url = 'http://localhost:5000/api/uploadFile'

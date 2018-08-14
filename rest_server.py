@@ -1,8 +1,9 @@
-#!flask/bin/python
+#!/usr/bin/env python
 
 from hashlib import sha1
 from datetime import datetime
-from flask import Flask, request
+from traceback import print_exc
+from flask import Flask, request, jsonify
 import box_tools as box
 import mysql_tools as mysql
 import mongo_tools as mongo
@@ -24,9 +25,9 @@ def uploadFile():
         file_obj = request.files.get('file')
         file_name = file_obj.filename
         file_data = file_obj.stream.read()
-        hash_bin = sha1()
-        sha1.update(file_data)
-        file_sha1 = sha1.hexdigest()
+        hash_obj = sha1()
+        hash_obj.update(file_data)
+        file_sha1 = hash_obj.hexdigest()
         file_modified = datetime.now()
         
         db_file = File(name=file_name,
@@ -36,11 +37,13 @@ def uploadFile():
                        )
     
         for mod in db_modules:
+            print("<DEBUG> type(bin):", type(db_file.bin))
             mod.insert_file(db_file)
     
         return jsonify({"Status": "Uploaded to all databases successfully."})
-    except Exception as e:
-        return jsonify({"ERROR": e})
+    except:
+        print_exc()
+        return jsonify({"Status": "ERROR"})
 
 # Start server
 def main():
