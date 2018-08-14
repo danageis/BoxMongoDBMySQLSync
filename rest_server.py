@@ -43,4 +43,8 @@ def uploadFile():
         return jsonify({"ERROR": e})
 
 # Start server
-if __name__ == "__main__": app.run()
+def main():
+    app.run()
+
+if __name__ == "__main__":
+    main()

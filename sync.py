@@ -4,16 +4,33 @@ import box_tools as box
 import mysql_tools as mysql
 import mongo_tools as mongo
 
-def sync():
-    """ Synchronize files across all 3 databases (Box.com/MySQL/MongoDB)."""
+def work(string):
+    """ Print working text to shell, without ending line. """
+    print(("%s..." % string).ljust(70), end="", flush=True)
+
+def end(): print("Complete!")
+def space(): print("")
+
+def sync(verbose=True):
+    """ Synchronize files across all 3 databases (Box.com/MySQL/MongoDB).
+    
+    verbose (bool): If true (default), print messages to shell while syncing.
+    """
+    v = verbose
     modules = (box, mysql, mongo)
-    sources = ['box', 'mysql', 'mongo']
+    sources = ['Box.com', 'MySQL', 'MongoDB']
     files, to_add, to_update = {}, {}, {}
     for i in range(3):
-        # Connect to source, get files, and create dicts for uploads and updates
+        # Connect to source
+        if v: work("Connecting to %s" % sources[i])
         modules[i].connect()
+        if v: end()
+        # Get files and create dicts for uploads and updates
+        if v: work("Getting files from %s" % sources[i])
         files[sources[i]] = modules[i].get_files()
         to_add[sources[i]], to_update[sources[i]] = [], []
+        if v: end()
+    if v: space()
 
     def process(src_name):
         """ Process files to update/upload for each data source.
@@ -21,7 +38,7 @@ def sync():
         src_name (str): name of source to check for (box/mysql/mongo)
         """
         nonlocal to_add, to_update
-        others_names = [s for s in sources if s != src_name]
+        other_names = [s for s in sources if s != src_name]
         src_files = files[src_name]
         other_files = files[other_names[0]] + files[other_names[1]]
 
@@ -34,10 +51,22 @@ def sync():
                     to_update[src_name].append(other)
 
     # Populate lists of files to be updated/added to each platform
-    for name in sources: process(name)
+    for name in sources:
+        if v: work("Checking %s files for changes" % name)
+        process(name)
+        if v: end()
+    if v: space()
 
     # Upload new files and update existing ones as needed
     for i in range(3):
         module, name = modules[i], sources[i]
-        for f in to_add[name]: module.insert_file(f)
-        for f in to_update[name]: module.update_file(f)
+        for f in to_add[name]:
+            if v: work("Uploading '%s' to %s" % (f.name, name))
+            module.insert_file(f)
+            if v: end()
+        for f in to_update[name]:
+            if v: work("Updating '%s' on %s" % (f.name, name))
+            module.update_file(f)
+            if v: end()
+
+    if v: print(" SYNCHRONIZATION COMPLETE ".center(79, '~'))

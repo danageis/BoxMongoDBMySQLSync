@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 
 from boxsdk.object.file import File as BoxFile
-from objects import DBFile
+from objects import File
 from box_auth import start_session
 
 """ GLOBAL VARIABLES """
@@ -24,28 +24,28 @@ def connect():
                  ]
 
 def insert_file(db_file):
-    """ Upload a DBFile object to Box.com."""
+    """ Upload a File object to Box.com."""
     client.folder(folder_id).upload_stream(db_file.bin, db_file.name)
 
 def update_file(db_file):
-    """ Update a file on Box.com with a DBFile object."""
+    """ Update a file on Box.com with a File object."""
     file_id = [f.id for f in box_files if f.name == db_file.name][0]
     client.file(file_id).update_contents_with_stream(db_file.bin)
 
 def get_file_by_id(file_id):
-    """ Get DBFile from Box.com based on Box file id."""
+    """ Get File from Box.com based on Box file id."""
     file_obj = client.file(file_id).get()
-    return DBFile(file_obj.name,
-                  file_obj.sha1,
-                  file_obj.modified_at,
-                  file_obj.content()
-                  )
+    return File(file_obj.name,
+                file_obj.sha1,
+                file_obj.modified_at,
+                file_obj.content()
+                )
 
 def get_file(name):
-    """ Get DBFile for file stored on Box.com, searched by filename."""
+    """ Get File for file stored on Box.com, searched by filename."""
     file_id = [f.id for f in box_files if f.name == name][0]
     return get_file_by_id(file_id)
 
 def get_files():
-    """ Get a list of all DBFile's in the Box folder."""
+    """ Get a list of all File's in the Box folder."""
     return [get_file_by_id(f.id) for f in box_files]

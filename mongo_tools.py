@@ -1,9 +1,11 @@
 #!/usr/bin/env python
 
-from mongo_auth import connect_db
-from objects import DBFile
+from pymongo import MongoClient
+from objects import File
 
 """ GLOBAL VARIABLES """
+ip = 'localhost'
+port = 27017
 client = None
 db = None
 collection = None
@@ -12,12 +14,12 @@ collection = None
 def connect():
     """ Connect to MongoDB instance and get database and collection. """
     global client, db, collection
-    client = connect_db()
+    client = MongoClient(ip, port)
     db = client.FinalProject
     collection = db.Files
 
 def insert_file(db_file):
-    """ Add a DBFile object to the Mongo DB."""
+    """ Add a File object to the Mongo DB."""
     collection.insert_one(db_file.__dict__)
 
 def update_file(db_file):
@@ -31,20 +33,22 @@ def update_file(db_file):
                           )
 
 def get_file(name):
-    """ Get a single file (name) from MongoDB as a DBFile object."""
+    """ Get a single file (name) from MongoDB as a File object."""
     results = collection.find_one({"name": name})
-    return DBFile(name=results['name'],
-                  sha1=results['sha1'],
-                  modified=results['modified'],
-                  data=results['bin']
-                  )
+    return File(name=results['name'],
+                sha1=results['sha1'],
+                modified=results['modified'],
+                data=results['bin']
+                )
 
 def get_files():
-    """ Return list of all DBFiles from Mongo."""
+    """ Return list of all Files from Mongo."""
     files = []
     for result in collection.find():
-        files.append(DBFile(name=result['name'],
-                     sha1=result['sha1'],
-                     modified=result['modified'],
-                     data=result['bin']
+        files.append(File(name=result['name'],
+                          sha1=result['sha1'],
+                          modified=result['modified'],
+                          data=result['bin']
+                          )
                      )
+    return files
