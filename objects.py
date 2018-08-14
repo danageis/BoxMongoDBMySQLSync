@@ -44,4 +44,5 @@ class File():
             raise TypeError("Must be Box formatted str or datetime object")
 
     def __repr__(self):
+        """ Represent as string by filename and first 6 characters of hash."""
         return "<File object '%s': %s>" % (str(self.name), str(self.sha1)[:6])

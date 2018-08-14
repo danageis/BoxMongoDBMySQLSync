@@ -1,9 +1,16 @@
 #!/usr/bin/env python
 
+from configparser import ConfigParser
 from mysql.connector import connect as connect_to_mysql
 from objects import File
 
 """ GLOBAL VARIABLES """
+config = ConfigParser()
+config.read('config.ini')
+host = config['MySQL']['HostIP']
+user = config['MySQL']['Username']
+passwd = config['MySQL']['Password']
+database = config['MySQL']['Database']
 connection = None
 c = None
 
@@ -11,10 +18,10 @@ c = None
 def connect():
     """ Connect to MySQL instance and get a connection cursor. """
     global connection, c
-    connection = connect_to_mysql(host='localhost',
-                                  user='root',
-                                  passwd='sqlpassword',
-                                  database='finalproject'
+    connection = connect_to_mysql(host=host,
+                                  user=user,
+                                  passwd=passwd,
+                                  database=database
                                   )
     c = connection.cursor()
 

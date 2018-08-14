@@ -1,11 +1,14 @@
 #!/usr/bin/env python
 
+from configparser import ConfigParser
 from pymongo import MongoClient
 from objects import File
 
 """ GLOBAL VARIABLES """
-ip = 'localhost'
-port = 27017
+config = ConfigParser()
+config.read('config.ini')
+ip = config['MongoDB']['HostIP']
+port = int(config['MongoDB']['HostPort'])
 client = None
 db = None
 collection = None

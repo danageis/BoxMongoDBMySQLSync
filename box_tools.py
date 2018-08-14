@@ -1,13 +1,16 @@
 #!/usr/bin/env python
 
 from io import BytesIO
+from configparser import ConfigParser
 from boxsdk.object.file import File as BoxFile
 from objects import File
 import box_auth
 
 """ GLOBAL VARIABLES """
+config = ConfigParser()
+config.read('config.ini')
 # Box folder ID for the directory in which files are stored
-folder_id = 52318493988
+folder_id = int(config['Box']['FolderID'])
 
 # Box.com session client for file access
 client = None

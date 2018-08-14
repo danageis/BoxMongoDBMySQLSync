@@ -8,6 +8,7 @@ try:
     import threading
     import webbrowser
     from http.server import BaseHTTPRequestHandler, HTTPServer
+    from configparser import ConfigParser
     import boxsdk
 except Exception as e:
     print("Error importing Modules:")
@@ -16,12 +17,14 @@ except Exception as e:
     sys.exit(1)
 
 """ GLOBAL VARIABLES """
+config = ConfigParser()
+config.read('config.ini')
 auth_code = None
 httpd = None
 server_thread = None
 box_user = 'box_user'
-BOX_CLIENT_ID = 'mo0n5dbl8rbum3quea3l6u4wdos6lbvr'
-BOX_CLIENT_SECRET = 'hVIO11vYfpsPenDM6yS5p6OXttMu1evD'
+BOX_CLIENT_ID = config['Box']['ClientID']
+BOX_CLIENT_SECRET = config['Box']['ClientSecret']
 access_token, refresh_token = None, None
 cache = os.path.join(os.getcwd(), 'cache')
 if not os.path.isdir(cache): os.mkdir(cache)
