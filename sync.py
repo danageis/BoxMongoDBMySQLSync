@@ -1,5 +1,6 @@
 #!/usr/bin/env python
 
+from traceback import print_exc
 import box_tools as box
 import mysql_tools as mysql
 import mongo_tools as mongo
@@ -43,12 +44,26 @@ def sync(verbose=True):
         other_files = files[other_names[0]] + files[other_names[1]]
 
         for other in other_files:
-            if other.name not in [f.name for f in src_files]:
+            if (other.name not in [f.name for f in src_files]
+                and other.name not in [f.name for f in to_add[src_name]]):
                 to_add[src_name].append(other)
             else:
-                src = [f for f in src_files if f.name == other.name][0]
+                try:
+                    src = [f for f in src_files if f.name == other.name][0]
+                except IndexError:
+                    src = [f for f in to_add[src_name]
+                           if f.name == other.name][0]
                 if other.sha1 != src.sha1 and other.modified > src.modified:
-                    to_update[src_name].append(other)
+                    if other.name not in [f.name for f in to_update[src_name]]:
+                        to_update[src_name].append(other)
+                    else:
+                        other_src = [f for f in to_update[src_name]
+                                     if f.name == other.name][0]
+                        if (other.sha1 != other_src.sha1
+                            and other.modified > other_src.modified):
+                            to_update[src_name].remove(other_src)
+                            to_update[src_name].append(other)
+
 
     # Populate lists of files to be updated/added to each platform
     for name in sources:
@@ -69,4 +84,14 @@ def sync(verbose=True):
             module.update_file(f)
             if v: end()
 
-    if v: print(" SYNCHRONIZATION COMPLETE ".center(79, '~'))
+    if v:
+        space()
+        print(" SYNCHRONIZATION COMPLETE ".center(79, '~'))
+
+if __name__ == '__main__':
+    try:
+        sync()
+    except:
+        print_exc()
+    finally:
+        input("\nPress Enter to exit...")
