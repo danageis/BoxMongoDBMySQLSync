@@ -9,6 +9,7 @@ import mysql_tools as mysql
 import mongo_tools as mongo
 from objects import File
 
+# Connect to each data source
 db_modules = (box, mysql, mongo)
 for mod in db_modules:
     mod.connect()
@@ -36,8 +37,8 @@ def uploadFile():
                        data=file_data
                        )
     
+        # Upload file to each data source
         for mod in db_modules:
-            print("<DEBUG> type(bin):", type(db_file.bin))
             mod.insert_file(db_file)
     
         return jsonify({"Status": "Uploaded to all databases successfully."})
