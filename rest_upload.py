@@ -1,9 +1,12 @@
 #!/usr/bin/env python
 
 from requests import post
+from configparser import ConfigParser
 
-# Enter the path to the file to upload
-file_path = 'requirements.txt'
+# Read path to the file to upload from config file
+config = ConfigParser()
+config.read('config.ini')
+file_path = config['REST']['UploadPath']
 
 # URL to REST upload file service
 url = 'http://localhost:5000/api/uploadFile'
