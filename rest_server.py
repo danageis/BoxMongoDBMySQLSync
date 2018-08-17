@@ -36,10 +36,27 @@ def uploadFile():
                        modified=file_modified,
                        data=file_data
                        )
+        print("Received file to upload: %s" % file_name)
+        
     
         # Upload file to each data source
         for mod in db_modules:
-            mod.insert_file(db_file)
+            mod_name = mod.__name__[:mod.__name__.index('_')]
+            files = mod.get_files()
+            print("Retrieved '%s' file list" % mod_name)
+            if db_file.name not in [f.name for f in files]:
+                mod.insert_file(db_file)
+                print("Uploaded '%s' to '%s'" % (db_file.name, mod_name))
+            else:
+                ext_file = [f for f in files if f.name == db_file.name][0]
+                if (ext_file.sha1 != db_file.sha1
+                    and ext_file.modified < db_file.modified):
+                    mod.update_file(db_file)
+                    print("Updated '%s' on '%s'" % (db_file.name, mod_name))
+                else:
+                    print("'%s' skipped on '%s', newer version present already"
+                          % (db_file.name, mod_name)
+                          )
     
         return jsonify({"Status": "Uploaded to all databases successfully."})
     except:
