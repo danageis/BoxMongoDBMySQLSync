@@ -41,3 +41,7 @@ This REST service is designed to take a file as an argument, and upload it acros
 2. Update 'UploadPath' under [REST] in *config.ini* to reflect the file you want to upload.
 3. Run *rest_upload.py*.
 4. The REST service has now uploaded the file across all platforms, and files should be accessible from any of the three.
+
+# Notes
+* MySQL may not accomodate large files. The data type is set to LONGBLOB, which should accomodate files up to 4GB, but I have had issues synchronizing large files.
+* Your Box.com username or password is never shared with scripts in this package, (authentication is handled only by the official Box website), but the script does store tokens allowing the script access to your Box files. These keys are stored insecurely in 'cache/auth.pkl'. The cache folder can be deleted after running the script if you do not wish these tokens to be stored locally. If the cache is deleted, you will need to re-authenticate through Box.com the next time the script is run.
