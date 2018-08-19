@@ -96,7 +96,7 @@ def start_session():
             raise boxsdk.exception.BoxOAuthException('No Tokens')
     except boxsdk.exception.BoxOAuthException:
         # Authenticate with OAuth
-        print("Authenticating...".ljust(70), end="", flush=True)
+        print("\nAuthenticating...".ljust(71), end="", flush=True)
         oauth = boxsdk.OAuth2(client_id=BOX_CLIENT_ID,
                               client_secret=BOX_CLIENT_SECRET,
                               store_tokens = store_tokens
