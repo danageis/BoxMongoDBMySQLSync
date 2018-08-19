@@ -9,10 +9,7 @@ import mysql_tools as mysql
 import mongo_tools as mongo
 from objects import File
 
-# Connect to each data source
 db_modules = (box, mysql, mongo)
-for mod in db_modules:
-    mod.connect()
 
 app = Flask(__name__)
 @app.route('/')
@@ -37,12 +34,12 @@ def uploadFile():
                        data=file_data
                        )
         print("Received file to upload: %s" % file_name)
-        
     
         # Upload file to each data source
         for mod in db_modules:
             mod_name = mod.__name__[:mod.__name__.index('_')]
             print("Checking '%s' file list..." % mod_name)
+            mod.connect()
             files = mod.get_files()
             if db_file.name not in [f.name for f in files]:
                 mod.insert_file(db_file)
