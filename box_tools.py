@@ -30,13 +30,12 @@ def connect():
 def insert_file(db_file):
     """ Upload a File object to Box.com."""
     # Convert raw bytes to bytes-stream object (Box SDK expects this obj type)
-    bin_obj = BytesIO(db_file.bin)
-    client.folder(folder_id).upload_stream(bin_obj, db_file.name)
+    client.folder(folder_id).upload_stream(BytesIO(db_file.bin), db_file.name)
 
 def update_file(db_file):
     """ Update a file on Box.com with a File object."""
     file_id = [f.id for f in box_files if f.name == db_file.name][0]
-    client.file(file_id).update_contents_with_stream(db_file.bin)
+    client.file(file_id).update_contents_with_stream(BytesIO(db_file.bin))
 
 def get_file_by_id(file_id):
     """ Get File from Box.com based on Box file id."""
