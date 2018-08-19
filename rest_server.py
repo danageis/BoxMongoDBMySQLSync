@@ -42,8 +42,8 @@ def uploadFile():
         # Upload file to each data source
         for mod in db_modules:
             mod_name = mod.__name__[:mod.__name__.index('_')]
+            print("Checking '%s' file list..." % mod_name)
             files = mod.get_files()
-            print("Retrieved '%s' file list" % mod_name)
             if db_file.name not in [f.name for f in files]:
                 mod.insert_file(db_file)
                 print("Uploaded '%s' to '%s'" % (db_file.name, mod_name))
@@ -54,7 +54,7 @@ def uploadFile():
                     mod.update_file(db_file)
                     print("Updated '%s' on '%s'" % (db_file.name, mod_name))
                 else:
-                    print("'%s' skipped on '%s', newer version present already"
+                    print("'%s' skipped on '%s': newest version present already"
                           % (db_file.name, mod_name)
                           )
     

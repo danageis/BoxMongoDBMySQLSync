@@ -38,9 +38,10 @@ This REST service is designed to take a file as an argument, and upload it acros
 
 ## REST Service
 1. Run *rest_server.py* to start the REST service HTTP server.
-2. Update 'UploadPath' under [REST] in *config.ini* to reflect the file you want to upload.
-3. Run *rest_upload.py*.
-4. The REST service has now uploaded the file across all platforms, and files should be accessible from any of the three.
+2. Run *rest_upload.py*, with the file you want to upload as an argument to the script.
+  * Dragging a file onto *rest_upload.py* in the file explorer is the easiest way to do this.
+  * If no file is provided as an argument, the default file in config.ini under [REST] will be used.
+3. The REST service has now synchronized the file across all platforms, and files should be accessible from any of the three.
 
 # Notes
 * MySQL may not accomodate large files. The data type is set to LONGBLOB, which should accomodate files up to 4GB, but I have had issues synchronizing large files.

@@ -1,12 +1,17 @@
 #!/usr/bin/env python
 
+import sys
 from requests import post
 from configparser import ConfigParser
 
-# Read path to the file to upload from config file
-config = ConfigParser()
-config.read('config.ini')
-file_path = config['REST']['UploadPath']
+# Get path to upload from as the first argument to the script
+if len(sys.argv) > 1:
+    file_path = sys.argv[1]
+else:
+    # If argument not given, then use default path (based on config.ini)
+    config = ConfigParser()
+    config.read('config.ini')
+    file_path = config['REST']['UploadPath']
 
 # URL to REST upload file service
 url = 'http://localhost:5000/api/uploadFile'
