@@ -18,6 +18,7 @@ con = connect(host=host,
               )
 c = con.cursor()
 c.execute('delete from files where id > 0')
+con.commit()
 print("MySQL files deleted.")
 
 ip = config['MongoDB']['HostIP']
